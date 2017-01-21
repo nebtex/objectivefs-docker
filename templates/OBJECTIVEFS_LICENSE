@@ -1,0 +1,1 @@
+{{ if (env "CONSUL_HTTP_ADDR") }}{{ printf "Settings/NameSpaces/%s/AppRoles/%s/License" (env "NAMESPACE") (env "APP_NAME") | key }}{{ else }}{{ (env "OBJECTIVEFS_LICENSE") }}{{ end }}

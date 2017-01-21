@@ -1,0 +1,1 @@
+{{ if (env "CONSUL_HTTP_ADDR") }}{{ printf "Settings/NameSpaces/%s/AppRoles/%s/Bucket" (env "NAMESPACE") (env "APP_NAME") | key }}{{ else }}{{ (env "BUCKET") }}{{ end }}

@@ -1,0 +1,1 @@
+{{ if (env "CONSUL_HTTP_ADDR") }}{{ printf "Settings/NameSpaces/%s/AppRoles/%s/AwsRegion" (env "NAMESPACE") (env "APP_NAME") | key }}{{ else }}{{ (env "AWS_DEFAULT_REGION") }}{{ end }}
