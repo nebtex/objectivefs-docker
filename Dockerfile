@@ -34,4 +34,4 @@ RUN mkdir -p /pids
 VOLUME /volume
 VOLUME /var/cache/objectivefs
 
-ENTRYPOINT ["/bin/entrypoint.sh"]
+ENTRYPOINT ["/bin/entrypoint"]

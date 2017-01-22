@@ -1,0 +1,76 @@
+--- 
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata: 
+  name: objectivefs
+  namespace: genos
+spec: 
+  template: 
+    metadata: 
+      labels: 
+        app: objectivefs
+      annotations: 
+          scheduler.alpha.kubernetes.io/affinity: >
+              {
+                "nodeAffinity": {
+                    "requiredDuringSchedulingIgnoredDuringExecution": {
+                      "nodeSelectorTerms": [
+                        {
+                          "matchExpressions": [
+                            {
+                              "key": "storage",
+                              "operator": "In",
+                              "values": ["yes"]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+              }
+          pod.boostport.com/vault-approle: genos-objectivefs
+          pod.boostport.com/vault-init-container: install
+          pod.beta.kubernetes.io/init-containers: '[
+              {
+                "name": "install",
+                "image": "boostport/kubernetes-vault-init:0.2.0",
+                "imagePullPolicy": "IfNotPresent",
+                "env": [
+                  {
+                    "name": "VAULT_ROLE_ID",
+                    "value": "d6d75589-c934-5ffe-e893-c5f1d8113e1e"
+                  },
+                  {
+                    "name": "CREDENTIALS_PATH",
+                    "value": "/secrets/vault-token"
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "vault-token",
+                    "mountPath": "/secrets/vault-token"
+                  }
+                ]
+              }
+            ]'
+    spec:
+      volumes:
+      - name: vault-token
+        emptyDir: {}
+      - name: data
+        hostPath:
+          path: /genos-objectivefs
+      - name: cache
+        hostPath:
+          path: /var/cache/objectivefs
+      containers: 
+      - image: nebtex/objectivefs-docker
+        imagePullPolicy: IfNotPresent
+        name: objectivefs
+        volumeMounts:
+        - name: vault-token
+          mountPath: /secrets/vault-token
+        - name: data
+          mountPath: /volume
+        - name: cache
+          mountPath: /var/cache/objectivefs
