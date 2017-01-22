@@ -42,13 +42,13 @@ spec:
                   },
                   {
                     "name": "CREDENTIALS_PATH",
-                    "value": "/secrets/vault-token"
+                    "value": "/secrets"
                   }
                 ],
                 "volumeMounts": [
                   {
                     "name": "vault-token",
-                    "mountPath": "/secrets/vault-token"
+                    "mountPath": "/secrets"
                   }
                 ]
               }
@@ -59,18 +59,35 @@ spec:
         emptyDir: {}
       - name: data
         hostPath:
-          path: /genos-objectivefs
+          path: /nebtex/genos
       - name: cache
         hostPath:
-          path: /var/cache/objectivefs
+          path: /nebtex/cache
+      - name: dev-fuse
+        hostPath:
+          path: /dev/fuse          
       containers: 
       - image: nebtex/objectivefs-docker
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: objectivefs
+        env:
+        - name: CONSUL_HTTP_ADDR
+          value: consul.kv:8500
+        - name: APP_NAME
+          value: objectivefs
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        securityContext:
+          privileged: true
         volumeMounts:
+        - mountPath: /dev/fuse
+          name: dev-fuse
         - name: vault-token
-          mountPath: /secrets/vault-token
+          mountPath: /secrets
         - name: data
           mountPath: /volume
         - name: cache
           mountPath: /var/cache/objectivefs
+        
