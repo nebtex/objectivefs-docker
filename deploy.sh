@@ -11,6 +11,12 @@ else
     chmod +x /usr/local/bin/docker-compose
 fi
 
-mkdir /nebtex/genos
+umount /nebtex/genos
+mkdir  -p /nebtex/genos
 mount --bind /nebtex/genos /nebtex/genos
 mount --make-shared /nebtex/genos
+
+mkdir -p /secrets/genos/objetivefs
+echo '{"clientToken":"'${vault_token:?}'", "vaultAddr":"http://vault.vault:8200"}' > /secrets/genos/objetivefs/vault-token
+
+docker-compose up -d

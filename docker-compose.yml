@@ -1,26 +1,26 @@
- version: '2'
+version: '2'
  services:
    objectivefs:
     image: nebtex/objectivefs-docker
     environment: 
-    - CONSUL_HTTP_ADDR: consul.kv:8500
-    - APP_NAME: value: objectivefs
-    - NAMESPACE: genos
+     CONSUL_HTTP_ADDR: "consul.kv:8500"
+     APP_NAME: objectivefs
+     NAMESPACE: genos
     volumes:
-    - /nebtex/genos:/volume:shared
-    - /nebtex/cache:/var/cache/objectivefs:rw
-    - /secrets/genos/objetivefs:/secrets
+     - /nebtex/genos:/volume:shared
+     - /nebtex/cache:/var/cache/objectivefs:rw
+     - /secrets/genos/objetivefs:/secrets
     restart: always
     cap_add:
-    - MKNOD
-    - SYS_ADMIN
+     - MKNOD
+     - SYS_ADMIN
     devices:
-    - /dev/fuse:/dev/fuse 
+     - /dev/fuse:/dev/fuse 
     dns:
-    - 10.96.0.2
+     - 10.96.0.2
     dns_search:
-    - genos.svc.cluster.local
-    - svc.cluster.local 
-    - cluster.local         
+     - genos.svc.cluster.local
+     - svc.cluster.local 
+     - cluster.local         
     security_opt:
-    - apparmor:unconfined
+     - apparmor:unconfined
